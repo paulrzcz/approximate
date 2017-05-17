@@ -36,8 +36,8 @@ import Data.Data
 import Data.Foldable
 #endif
 import Data.Functor.Apply
-import Data.Hashable
-import Data.Hashable.Extras
+import Data.Hashable (Hashable(..))
+import Data.Hashable.Lifted (Hashable1(..))
 import Data.Monoid
 import Data.Pointed
 import Data.SafeCopy
@@ -69,7 +69,9 @@ instance Serialize a => Serialize (Approximate a) where
 instance Serialize a => SafeCopy (Approximate a)
 
 instance Hashable a => Hashable (Approximate a)
-instance Hashable1 Approximate
+instance Hashable1 Approximate where
+    liftHashWithSalt h s (Approximate c low est high) =
+        hashWithSalt s c `h` low `h` est `h` high
 
 instance Serial a => Serial (Approximate a)
 

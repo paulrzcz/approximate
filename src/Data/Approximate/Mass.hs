@@ -32,8 +32,8 @@ import Data.Foldable
 #endif
 import Data.Functor.Bind
 import Data.Functor.Extend
-import Data.Hashable
-import Data.Hashable.Extras
+import Data.Hashable (Hashable(..))
+import Data.Hashable.Lifted (Hashable1(..))
 import Data.Pointed
 import Data.SafeCopy
 import Data.Semigroup
@@ -77,7 +77,8 @@ instance Serialize a => Serialize (Mass a) where
 instance Serialize a => SafeCopy (Mass a)
 
 instance Hashable a => Hashable (Mass a)
-instance Hashable1 Mass
+instance Hashable1 Mass where
+    liftHashWithSalt h s (Mass m x) = hashWithSalt s m `h` x
 
 instance Serial1 Mass where
   serializeWith f (Mass p a) = serialize p >> f a
